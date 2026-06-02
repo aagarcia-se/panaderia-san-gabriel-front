@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { MdStorage, MdKitchen, MdSettings, MdOutlineSettings, MdPoll, MdOutlineCalendarToday, } from "react-icons/md"; // Importar el ícono
+import { MdStorage, MdKitchen, MdSettings, MdOutlineSettings, MdPoll, MdOutlineCalendarToday, MdNotificationsActive, } from "react-icons/md"; // Importar el ícono
 import { Container, Row, Col } from "react-bootstrap";
 import Title from "../../../components/Title/Title";
 import useValidarPermisos from "../../../hooks/configuraciones/useValidarPermisos";
@@ -108,7 +108,7 @@ const PanelConfig = () => {
           </div>
         </Col>
 
-                {/* Sección: configuracion de encuestas */}
+        {/* Sección: activacion de fecha de produccion */}
         {(usuario?.nombreUsuario === "admin" || usuario?.usuario === "aagarcia") && (
           <Col xs={12} md={6} className="config-col">
             <div
@@ -130,6 +130,27 @@ const PanelConfig = () => {
             </div>
           </Col>
         )}
+
+        {/* Sección: activacion de notificaciones especiales */}
+        <Col xs={12} md={6} className="config-col">
+          <div
+            className={`config-section ${
+              permisos.notificaciones ? "clickable" : "disabled"
+            }`}
+            onClick={() =>
+              permisos.notificaciones &&
+              handleNavigate("/habilitar-notificaciones", navigate)
+            }
+          >
+            <h2 className="section-title">
+             <MdNotificationsActive className="section-icon icon-noti-activos" />
+              Habilitar Notificaciones
+            </h2>
+            <p className="section-description">
+              Habilita notificaciones especiales para usuarios.
+            </p>
+          </div>
+        </Col>
 
       </Row>
     </Container>

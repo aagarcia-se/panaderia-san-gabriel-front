@@ -4,5 +4,6 @@
     configuracionPerfil: "/config/configuracion-perfil",
     reportes: "/reportes",
     encuestas: "/encuestas-config",
-    activarFechaProduccion: "/activar-fecha-produccion"
+    activarFechaProduccion: "/activar-fecha-produccion",
+    notificaciones: "/habilitar-notificaciones"
   };

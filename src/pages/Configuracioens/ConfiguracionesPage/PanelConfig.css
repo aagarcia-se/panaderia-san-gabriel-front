@@ -84,3 +84,11 @@
 .config-title-container {
   margin-bottom: 20px; /* Espaciado inferior */
 }
+
+.icon-noti-activos {
+  color: #EDDD53; /* Verde */
+}
+
+.icon-encuestas {
+  color: #A257C7; /* Naranja */
+}

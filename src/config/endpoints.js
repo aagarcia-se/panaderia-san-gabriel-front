@@ -36,6 +36,7 @@ const getEndpoints = {
     CONSULTAR_FECHA_PRODUCCION: "fecha-produccion",
     GET_GASTOS: "gastos-por-fecha-y-sucursal",
     GET_PRODUCTOS_VENDIDOS: "venta-por-producto",
+    GET_NOTIFICACIONES_ACTIVAS: "consultar-activaciones-notificaciones",
 };
 
 const postEndpoints = {
@@ -58,6 +59,7 @@ const postEndpoints = {
     REGISTRAR_PREGUNTAS: "registrar-respuestas",
     CREAR_CAMPANIA: "crear-campania",
     ACTIVAR_FECHA_PRODUCCION: "activar-fecha-produccion",
+    ACTIVAR_NOTIFICACION: "activar-notificaciones",
 };
 
 const putEndpoints = {
@@ -72,7 +74,8 @@ const putEndpoints = {
     ACTUALIZAR_RECETA: "/actualizar-receta",
     CAMBIAR_PASS: "/actualizar-pass",
     ACTUALIZAR_ORDEN_ESPECIAL: "/actualizar-orden-especial",
-    ACTUALIZAR_USUARIO: "/actualizar-datos-usuario"
+    ACTUALIZAR_USUARIO: "/actualizar-datos-usuario",
+    DESACTIVAR_NOTIFICACION: "desactivar-notificaciones"
 };
 
 const deleteEndpoints = {
