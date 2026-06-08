@@ -43,15 +43,18 @@ export const handleStockChange = (idProducto, value, setStockValues ) => {
         stockProductos: Object.entries(stockValues)
           .filter(([_, value]) => value !== null && !isNaN(value))
           .map(([idProducto, cantidad]) => {
+
             const producto = productos.find(
               (p) => p.idProducto === parseInt(idProducto)
             );
+
+            const stockFinal = parseInt(idProducto) === 1 ? cantidad * 6 : cantidad;
   
             return {
               idUsuario: usuario.idUsuario,
               idProducto: parseInt(idProducto),
               idSucursal: Number(decryptId(decodeURIComponent(idSucursal))),
-              stock: cantidad,
+              stock: stockFinal,
               tipoProduccion: producto?.tipoProduccion || "",
               controlarStock: producto?.controlarStock || 0,
               controlarStockDiario: producto?.controlarStockDiario || 0,

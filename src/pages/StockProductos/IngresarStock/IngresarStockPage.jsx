@@ -80,11 +80,11 @@ const IngresarStockGeneralPage = () => {
     });
   };
 
-  const prodPorHarina = productos?.filter((item) => item.tipoProduccion !== "bandejas");
+  // const prodPorHarina = productos?.filter((item) => item.tipoProduccion !== "bandejas");
   const categorias = [...new Set(productos?.map((item) => item.nombreCategoria) || [])];
 
   const productosFiltrados = useMemo(() => {
-    let filtered = categoriaActiva === "Todas" ? prodPorHarina : prodPorHarina?.filter(
+    let filtered = categoriaActiva === "Todas" ? productos : productos?.filter(
       (item) => item.nombreCategoria === categoriaActiva
     );
 
@@ -95,7 +95,7 @@ const IngresarStockGeneralPage = () => {
     }
 
     return filtered;
-  }, [prodPorHarina, categoriaActiva, searchTerm]);
+  }, [productos, categoriaActiva, searchTerm]);
 
   const clearSearch = () => {
     setSearchTerm("");
@@ -217,7 +217,7 @@ const IngresarStockGeneralPage = () => {
                 Stock Actual
               </th>
               <th className="dark-header text-center" style={{ width: "30%" }}>
-                Cantidad de Unidades
+                Cantidad de Unidades / Filas
               </th>
             </tr>
           </thead>
