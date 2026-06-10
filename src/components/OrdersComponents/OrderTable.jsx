@@ -59,7 +59,7 @@ const OrderTable = ({ orders, onDelete, onViewPdf, loadingViewPdf }) => {
             <th className="text-center">No. de Orden</th>
             <th className="text-center">Sucursal</th>
             <th className="text-center">Turno</th>
-            <th className="text-center">Estado</th>
+            {/* <th className="text-center">Estado</th> */}
             <th className="text-center">Fecha Producción</th>
             <th className="text-center">Acciones</th>
           </tr>
@@ -94,11 +94,11 @@ const OrderTable = ({ orders, onDelete, onViewPdf, loadingViewPdf }) => {
                 <td className="text-center shift-cell" title="Doble clic para ver detalles">
                   {order.ordenTurno}
                 </td>
-                <td className="text-center" title="Doble clic para ver detalles">
+                {/* <td className="text-center" title="Doble clic para ver detalles">
                   <Badge className={`status-badge ${order.estadoOrden === "P" ? "status-pending" : "status-completed"}`}>
                     {order.estadoOrden === "P" ? "Pendiente" : "Completado"}
                   </Badge>
-                </td>
+                </td> */}
                 <td className="text-center production-date" title="Doble clic para ver detalles">
                   {formatDateToDisplay(order.fechaAProducir)}
                   {isTodayd && (

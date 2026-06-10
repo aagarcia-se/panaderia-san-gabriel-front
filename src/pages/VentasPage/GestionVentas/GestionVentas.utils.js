@@ -1,5 +1,6 @@
 import { eliminarVentaService } from "../../../services/ventas/ventas.service";
 import dayjs from "dayjs";
+import { getCurrentDateTimeWithSeconds } from "../../../utils/dateUtils";
 
 // ─────────────────────────────────────────────
 // CONSTANTES DE FILTROS
@@ -77,7 +78,8 @@ export const handleDeleteVenta = async (ventaToDelete, setVentas, setIsPopupOpen
   setIsloading(true);
   if (ventaToDelete) {
     try {
-      const resDelete = await eliminarVentaService(ventaToDelete);
+      const dateTime = getCurrentDateTimeWithSeconds();
+      const resDelete = await eliminarVentaService(ventaToDelete, dateTime);
       if (resDelete.status === 200) {
         setVentas((ventas) => ventas.filter((venta) => venta.idVenta !== ventaToDelete));
       }

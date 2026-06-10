@@ -114,14 +114,14 @@ export const handleBuscarVentas = async ( setIsLoading, turnoValue, sucursalValu
 
   try {
     // Consultar la orden
-    const orden = await fetchOrden(turnoValue, today, sucursalValue);
+    // const orden = await fetchOrden(turnoValue, today, sucursalValue);
 
-    if (orden.encabezadoOrden !== null) {
-      setOrden(orden); // Guardar la orden en el estado
-    }else{
-      setHasOrdenes(false);
-      return;
-    }
+    // if (orden.encabezadoOrden !== null) {
+    //   setOrden(orden); // Guardar la orden en el estado
+    // }else{
+    //   setHasOrdenes(false);
+    //   setShowModal(false);
+    // }
 
     const stockGeneral = await fetchStockGeneral(sucursalValue);
     const stockDelDia = await fetchStockDelDia(sucursalValue);
@@ -143,12 +143,13 @@ export const handleBuscarVentas = async ( setIsLoading, turnoValue, sucursalValu
       setOrdenYProductos(nuevosProductos);
     }
 
-    setShowModal(false); // Cerrar el modal después de la búsqueda
+    // setShowModal(false); // Cerrar el modal después de la búsqueda
   } catch (error) {
     setErrorPopupMessage("Hubo un error al consultar los recursos");
     setIsPopupErrorOpen(true);
   } finally {
     setIsLoading(false);
+    setShowModal(false);
   }
 };
 

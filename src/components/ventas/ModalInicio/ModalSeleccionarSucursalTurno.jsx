@@ -113,7 +113,7 @@ const ModalSeleccionarSucursalTurno = ({
           </div>
         )}
 
-        {!isLoading && showModal && hasOrdenes === false && (
+        {/* {!isLoading && showModal && hasOrdenes === false && (
           <div className="st-alert">
             <div className="st-alert-icon">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
@@ -131,7 +131,7 @@ const ModalSeleccionarSucursalTurno = ({
               </p>
             </div>
           </div>
-        )}
+        )} */}
 
       </Modal.Body>
 
