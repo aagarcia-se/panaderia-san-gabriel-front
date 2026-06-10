@@ -68,23 +68,28 @@ const IngresarStockGeneralPage = () => {
   }, [productos, initialStockGeneral, initialStockDelDia]);
 
   // Función para actualizar el stock actual
-  const updateCurrentStock = (newStockValues) => {
-    setCurrentStock(prev => {
-      const updated = {...prev};
-      Object.entries(newStockValues).forEach(([idProducto, cantidad]) => {
-        if (cantidad !== null && !isNaN(cantidad)) {
-          updated[idProducto] = (updated[idProducto] || 0) + parseInt(cantidad);
-        }
-      });
-      return updated;
+const updateCurrentStock = (newStockValues) => {
+  setCurrentStock(prev => {
+    const updated = {...prev};
+    Object.entries(newStockValues).forEach(([idProducto, cantidad]) => {
+      if (cantidad !== null && !isNaN(cantidad)) {
+        const producto = productos.find(p => p.idProducto === parseInt(idProducto));
+        // Si es Francés, convertir filas a unidades antes de sumar
+        const cantidadReal = producto?.nombreProducto === "Frances"
+          ? parseInt(cantidad) * 6
+          : parseInt(cantidad);
+        updated[idProducto] = (updated[idProducto] || 0) + cantidadReal;
+      }
     });
-  };
+    return updated;
+  });
+};
 
-  const prodPorHarina = productos?.filter((item) => item.tipoProduccion !== "bandejas");
+  // const prodPorHarina = productos?.filter((item) => item.tipoProduccion !== "bandejas");
   const categorias = [...new Set(productos?.map((item) => item.nombreCategoria) || [])];
 
   const productosFiltrados = useMemo(() => {
-    let filtered = categoriaActiva === "Todas" ? prodPorHarina : prodPorHarina?.filter(
+    let filtered = categoriaActiva === "Todas" ? productos : productos?.filter(
       (item) => item.nombreCategoria === categoriaActiva
     );
 
@@ -95,7 +100,7 @@ const IngresarStockGeneralPage = () => {
     }
 
     return filtered;
-  }, [prodPorHarina, categoriaActiva, searchTerm]);
+  }, [productos, categoriaActiva, searchTerm]);
 
   const clearSearch = () => {
     setSearchTerm("");
@@ -217,7 +222,7 @@ const IngresarStockGeneralPage = () => {
                 Stock Actual
               </th>
               <th className="dark-header text-center" style={{ width: "30%" }}>
-                Cantidad de Unidades
+                Cantidad de Unidades / Filas
               </th>
             </tr>
           </thead>
@@ -243,7 +248,9 @@ const IngresarStockGeneralPage = () => {
                     </div>
                   </td>
                   <td className="text-center align-middle" style={{ fontWeight: "bold" }}>
-                    {currentStock[producto.idProducto] || 0}
+                    {producto.nombreProducto === "Frances"
+                      ? `${Math.floor((currentStock[producto.idProducto] || 0) / 6)}.${(currentStock[producto.idProducto] || 0) % 6}`
+                      : currentStock[producto.idProducto] || 0}
                   </td>
                   <td className="text-center align-middle">
                     <Form.Control

@@ -36,18 +36,12 @@ const IngresarVentaPage = () => {
   const [stockGeneral, setStockGeneral] = useState([]);
   const [stockDelDia, setStockDelDia] = useState([]);
   const [ordenYProductos, setOrdenYProductos] = useState([]);
-
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(true);
   const [hasOrdenes, setHasOrdenes] = useState(null);
-
-  const [showVentaEsperadaModal, setShowVentaEsperadaModal] =
-    useState(false);
-
+  const [showVentaEsperadaModal, setShowVentaEsperadaModal] = useState(false);
   const [showGastosModal, setShowGastosModal] = useState(false);
-
   const [showSalesSummary, setShowSalesSummary] = useState(false);
-
   const [ventaTotal, setVentaTotal] = useState(0);
   const [ventaReal, setVentaReal] = useState(null);
   const [gastos, setGastos] = useState([]);

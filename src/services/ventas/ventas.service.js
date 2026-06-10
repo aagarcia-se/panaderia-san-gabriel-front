@@ -22,9 +22,9 @@ export const ingresarVentaService = async (dateVenta) => {
   }
 }
 
-export const eliminarVentaService = async (idVenta) => {
+export const eliminarVentaService = async (idVenta, dateTime) => {
   try {
-    const response = await api.delete(`${deleteEndpoints.ELMINAR_VENTA}/${idVenta}`); 
+    const response = await api.delete(`${deleteEndpoints.ELMINAR_VENTA}?idVenta=${idVenta}&dateTime=${dateTime}`); 
       return response.data;
   } catch (error) {
     throw error;

@@ -12,7 +12,7 @@ export const useCategoriasActivas = (ordenYProductos) => {
 
     // Establecer la primera categoría como activa si no hay una seleccionada
     if (categoriasUnicas.length > 0 && !activeCategory) {
-      setActiveCategory(categoriasUnicas[0]);
+      setActiveCategory("Todas");
     }
   }, [ordenYProductos, activeCategory]);
 

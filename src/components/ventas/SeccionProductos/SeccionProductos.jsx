@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Form, Table, Button, Alert } from "react-bootstrap";
+import { Form, Table, Button } from "react-bootstrap";
 import { filterProductsByName, getInitials, getUniqueColor } from "../../../pages/VentasPage/IngresarVenta/IngresarVenta.Utils";
 import "./SeccionProductos.styles.css";
-import { BsExclamationTriangleFill } from "react-icons/bs";
 import ErrorPopup from "../../../components/Popup/ErrorPopUp";
 
 const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategory, setActiveCategory, ordenYProductos, productsToShow, 
@@ -12,22 +11,21 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
   const [errorMessage, setErrorMessage] = useState(null);
   const [isPopupErrorOpen, setIsPopupErrorOpen] = useState(false);
 
-  // Filtrar productos que tienen stock (general o del día)
+  const stockGeneralArray = Array.isArray(stockGeneral) ? stockGeneral : [];
+  const stockDelDiaArray = Array.isArray(stockDelDia) ? stockDelDia : [];
+
   const productosConStock = ordenYProductos.filter(producto => {
-    const hasGeneralStock = stockGeneral?.some(item => item.idProducto === producto.idProducto && item.cantidadExistente > 0);
-    const hasDailyStock = stockDelDia?.some(item => item.idProducto === producto.idProducto && item.cantidadExistente > 0);
+    const hasGeneralStock = stockGeneralArray.some(item => item.idProducto === producto.idProducto && item.cantidadExistente > 0);
+    const hasDailyStock = stockDelDiaArray.some(item => item.idProducto === producto?.idProducto && item?.cantidadExistente > 0);
     return hasGeneralStock || hasDailyStock;
   });
 
-  // Obtener el stock actual de un producto
   const getCurrentStock = (idProducto) => {
-    const generalStockItem = stockGeneral?.find(item => item.idProducto === idProducto);
-    const dailyStockItem = stockDelDia?.find(item => item.idProducto === idProducto);
-    
+    const generalStockItem = stockGeneralArray.find(item => item.idProducto === idProducto);
+    const dailyStockItem = stockDelDiaArray.find(item => item.idProducto === idProducto);
     return (generalStockItem?.cantidadExistente || 0) + (dailyStockItem?.cantidadExistente || 0);
   };
 
-  // Formatear el stock para Frances (6 unidades = 1 fila)
   const formatStock = (producto) => {
     const stock = getCurrentStock(producto.idProducto);
     if (producto.nombreProducto === "Frances") {
@@ -38,10 +36,8 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
     return stock;
   };
 
-  // Inicializar trayQuantities con 0
   useEffect(() => {
     const initialQuantities = {};
-    
     productosConStock.forEach((producto) => {
       if (trayQuantities[producto.idProducto] === undefined) {
         initialQuantities[producto.idProducto] = {
@@ -50,7 +46,6 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
         };
       }
     });
-  
     if (Object.keys(initialQuantities).length > 0) {
       setTrayQuantities((prev) => ({ ...prev, ...initialQuantities }));
     }
@@ -63,24 +58,19 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
 
   const handleBlur = (idProducto, value, productoNombre) => {
     let parsedValue;
-    
     if (productoNombre === "Frances") {
-      // Para Frances, permitir decimales
       parsedValue = parseFloat(value) || 0;
       parsedValue = Math.max(0, parsedValue);
     } else {
-      // Para otros productos, solo enteros
       parsedValue = parseInt(value, 10) || 0;
       parsedValue = Math.max(0, parsedValue);
     }
 
-    // Validar que no exceda el stock disponible
     const producto = productosConStock.find(p => p.idProducto === idProducto);
     const stockDisponible = getCurrentStock(idProducto);
     let cantidadIngresada = parsedValue;
 
     if (productoNombre === "Frances") {
-      // Convertir filas a unidades (1 fila = 6 unidades)
       cantidadIngresada = Math.floor(parsedValue) * 6 + Math.round((parsedValue % 1) * 10);
     }
 
@@ -104,21 +94,17 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
   const handleInputChange = (e, producto) => {
     const value = e.target.value;
     const isFrances = producto.nombreProducto === "Frances";
-    
-    // Validación en tiempo real para Frances (no más de un decimal)
-    if (isFrances && value.includes('.') && value.split('.')[1]?.length > 1) {
-      return; // No actualizamos el estado si tiene más de un decimal
-    }
-    
-    // Validación en tiempo real para no exceder el stock
+
+    if (isFrances && value.includes('.') && value.split('.')[1]?.length > 1) return;
+
     const productoCompleto = productosConStock.find(p => p.idProducto === producto.idProducto);
     const stockDisponible = getCurrentStock(producto.idProducto);
-    
+
     if (value !== "") {
-      let cantidadIngresada = isFrances ? 
-        Math.floor(parseFloat(value)) * 6 + Math.round((parseFloat(value) % 1) * 10) :
-        parseInt(value, 10);
-      
+      let cantidadIngresada = isFrances
+        ? Math.floor(parseFloat(value)) * 6 + Math.round((parseFloat(value) % 1) * 10)
+        : parseInt(value, 10);
+
       if (cantidadIngresada > stockDisponible) {
         const mensajeError = `No hay suficiente ${producto.nombreProducto} en stock. Stock disponible: ${formatStock(productoCompleto)} ${isFrances ? "filas" : "unidades"}`;
         setErrorMessage(mensajeError);
@@ -126,9 +112,8 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
         return;
       }
     }
-    
+
     if (isFrances) {
-      // Permitir decimales para Frances
       if (value === "" || /^\d*\.?\d*$/.test(value)) {
         setTrayQuantities({
           ...trayQuantities,
@@ -139,7 +124,6 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
         });
       }
     } else {
-      // Solo enteros para otros productos
       if (value === "" || /^\d*$/.test(value)) {
         setTrayQuantities({
           ...trayQuantities,
@@ -154,22 +138,23 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
 
   const getInputValue = (producto) => {
     const cantidad = trayQuantities[producto.idProducto]?.cantidad ?? 0;
-
     if (focusedInput === producto.idProducto) {
       return cantidad === 0 ? "" : cantidad.toString();
-    } else {
-      return producto.nombreProducto === "Frances" 
-        ? cantidad.toString() 
-        : Math.floor(cantidad).toString();
     }
+    return producto.nombreProducto === "Frances"
+      ? cantidad.toString()
+      : Math.floor(cantidad).toString();
   };
 
-  // Filtrar productos por nombre y categoría
-  const filteredProducts = filterProductsByName(productosConStock, searchTerm)
+  // ✅ Variable extraída — evita llamar filterProductsByName múltiples veces
+  const productosFiltradosPorNombre = filterProductsByName(productosConStock, searchTerm);
+
+  const filteredProducts = productosFiltradosPorNombre
     .filter(producto => activeCategory === "Todas" || producto.nombreCategoria === activeCategory);
 
   return (
     <div className="ventas-products-section mt-4">
+
       {/* Barra de búsqueda */}
       <div className="mb-4 ventas-search-container">
         <Form.Control
@@ -184,27 +169,26 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
 
       {/* Selector de categoría */}
       <div className="mb-4 ventas-category-selector">
+        {/* ✅ Todas siempre primero y activo por defecto */}
         <Button
-          key="Todas"
           variant={activeCategory === "Todas" ? "primary" : "outline-primary"}
           onClick={() => setActiveCategory("Todas")}
           className="ventas-category-btn"
         >
-          Todas ({filterProductsByName(productosConStock, searchTerm).length})
+          Todas ({productosFiltradosPorNombre.length})
         </Button>
-        {categorias.map((categoria) => (
-          <Button
-            key={categoria}
-            variant={activeCategory === categoria ? "primary" : "outline-primary"}
-            onClick={() => setActiveCategory(categoria)}
-            className="ventas-category-btn"
-          >
-            {categoria} (
-            {filterProductsByName(productosConStock, searchTerm)
-              .filter(p => p.nombreCategoria === categoria).length}
-            )
-          </Button>
-        ))}
+        {categorias
+          .filter(cat => cat !== "Todas") // ✅ evita duplicar "Todas" si viene en la prop
+          .map((categoria) => (
+            <Button
+              key={categoria}
+              variant={activeCategory === categoria ? "primary" : "outline-primary"}
+              onClick={() => setActiveCategory(categoria)}
+              className="ventas-category-btn"
+            >
+              {categoria} ({productosFiltradosPorNombre.filter(p => p.nombreCategoria === categoria).length})
+            </Button>
+          ))}
       </div>
 
       {/* Tabla de productos */}
@@ -212,15 +196,9 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
         <Table striped bordered hover className="excel-table">
           <thead>
             <tr>
-              <th className="dark-header text-center" style={{ width: "40%" }}>
-                Producto
-              </th>
-              <th className="dark-header text-center" style={{ width: "30%" }}>
-                Stock Actual
-              </th>
-              <th className="dark-header text-center" style={{ width: "30%" }}>
-                U/F No Vendidas
-              </th>
+              <th className="dark-header text-center" style={{ width: "40%" }}>Producto</th>
+              <th className="dark-header text-center" style={{ width: "30%" }}>Stock Actual</th>
+              <th className="dark-header text-center" style={{ width: "30%" }}>U/F No Vendidas</th>
             </tr>
           </thead>
           <tbody>
@@ -228,7 +206,6 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
               filteredProducts.map((producto) => {
                 const esFrances = producto.nombreProducto === "Frances";
                 const stockFormateado = formatStock(producto);
-                
                 return (
                   <tr key={producto.idProducto}>
                     <td>
@@ -275,8 +252,8 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
             ) : (
               <tr>
                 <td colSpan="3" className="text-center py-4">
-                  {productosConStock.length === 0 
-                    ? "No hay productos con stock disponible." 
+                  {productosConStock.length === 0
+                    ? "No hay productos con stock disponible."
                     : "No se encontraron productos con ese nombre."}
                 </td>
               </tr>
@@ -285,7 +262,6 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
         </Table>
       </div>
 
-      {/* Popup de error */}
       <ErrorPopup
         isOpen={isPopupErrorOpen}
         onClose={() => setIsPopupErrorOpen(false)}

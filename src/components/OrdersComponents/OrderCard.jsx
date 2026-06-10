@@ -43,10 +43,10 @@ const OrderCard = ({ order, onViewDetails, onDeleteOrder }) => {
             )}
           </div>
           
-          <div className="status-indicator">
+          {/* <div className="status-indicator">
             <div className={`status-dot ${order.estadoOrden === 'P' ? 'pending' : 'completed'}`} />
             <span>{order.estadoOrden === 'P' ? 'Pendiente' : 'Completado'}</span>
-          </div>
+          </div> */}
         </div>
 
         {/* Detalles */}
