@@ -212,9 +212,6 @@ const crearDetalleVenta = (productos, trayQuantities, orden, fechaActual) => {
         unidadesFrancesNoVendidas = obtenerUnidadesFrances(cantidadIngresada);
       }
       
-      // Solo para la categoría 1 (Panaderia) y si hay idOrdenProduccion
-      if (producto.idCategoria === 1 && idOrdenProduccion && producto.controlarStock === 0 && producto.controlarStockDiario === 1) {
-        // Verificar si el producto está en la orden
           return {
             idProducto: producto.idProducto,
             tipoProduccion: producto.tipoProduccion,
@@ -225,18 +222,6 @@ const crearDetalleVenta = (productos, trayQuantities, orden, fechaActual) => {
             fechaCreacion: fechaActual,
           };
         
-      } else {
-        // Para otras categorías
-          return {
-            idProducto: producto.idProducto,
-            tipoProduccion: producto.tipoProduccion,
-            controlarStock: producto.controlarStock,
-            controlarStockDiario: producto.controlarStockDiario,
-            idCategoria: producto.idCategoria,
-            unidadesNoVendidas: cantidadIngresada, 
-            fechaCreacion: fechaActual,
-          };
-      }
     })
     .filter(Boolean); // Filtrar elementos nulos (productos no incluidos)
 };
