@@ -262,6 +262,7 @@ const updateCurrentStock = (newStockValues) => {
                       }
                       className="quantity-input"
                       placeholder="0"
+                      onWheel={(e) => e.target.blur()} // ✅ suelta el foco al scrollear
                     />
                   </td>
                 </tr>

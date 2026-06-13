@@ -232,6 +232,7 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
                           onBlur={(e) => handleBlur(producto.idProducto, e.target.value, producto.nombreProducto)}
                           className="quantity-input"
                           inputMode="decimal"
+                          onWheel={(e) => e.target.blur()} // ✅ suelta el foco al scrollear
                         />
                       ) : (
                         <Form.Control
@@ -243,6 +244,7 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
                           onFocus={() => handleFocus(producto.idProducto)}
                           onBlur={(e) => handleBlur(producto.idProducto, e.target.value, producto.nombreProducto)}
                           className="quantity-input"
+                          onWheel={(e) => e.target.blur()} // ✅ suelta el foco al scrollear
                         />
                       )}
                     </td>

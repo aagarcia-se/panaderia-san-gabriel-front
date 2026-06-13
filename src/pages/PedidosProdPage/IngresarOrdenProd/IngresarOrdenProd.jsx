@@ -450,6 +450,7 @@ const IngresarOrdenProd = () => {
                                 },
                               })
                             }
+                            onWheel={(e) => e.target.blur()} // ✅ suelta el foco al scrollear
                             className="quantity-input"
                           />
                         </div>
