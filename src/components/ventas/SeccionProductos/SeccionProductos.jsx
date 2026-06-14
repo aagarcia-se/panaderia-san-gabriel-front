@@ -85,7 +85,7 @@ const SeccionProductos = ({ searchTerm, setSearchTerm, categorias, activeCategor
       ...trayQuantities,
       [idProducto]: {
         cantidad: parsedValue,
-        precioPorUnidad: productsToShow.find((p) => p.idProducto === idProducto).precioPorUnidad,
+        precioPorUnidad: productsToShow.find((p) => p.idProducto === idProducto)?.precioPorUnidad,
       },
     });
     setFocusedInput(null);

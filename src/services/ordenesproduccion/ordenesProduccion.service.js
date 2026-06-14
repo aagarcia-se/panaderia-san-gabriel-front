@@ -47,3 +47,20 @@ export const consultarDetalleOrdenPorCriterio = async (ordenTurno, fechaAprducir
     throw error;
   }
 };
+
+export const ingresarOrdenProduccionBatchService = async (formData) => {
+  try {
+    const response = await api.post(
+      `${postEndpoints.INGRESAR_ORDEN_PRODUCCION_BATCH}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data", // ✅ sobreescribe solo para esta llamada
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
