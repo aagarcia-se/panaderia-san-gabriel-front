@@ -60,6 +60,7 @@ const postEndpoints = {
     CREAR_CAMPANIA: "crear-campania",
     ACTIVAR_FECHA_PRODUCCION: "activar-fecha-produccion",
     ACTIVAR_NOTIFICACION: "activar-notificaciones",
+    INGRESAR_ORDEN_PRODUCCION_BATCH: "ingresar-orden-batch",
 };
 
 const putEndpoints = {
