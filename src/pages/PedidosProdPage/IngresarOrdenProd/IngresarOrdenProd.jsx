@@ -141,7 +141,7 @@ const IngresarOrdenProd = () => {
   const [showScrollButton,     setShowScrollButton]     = useState(false);
 
   // CSV
-  const [modoIngreso, setModoIngreso] = useState("manual");
+  const [modoIngreso, setModoIngreso] = useState("csv");
   const [csvFile,     setCsvFile]     = useState(null);
   const [csvLoading,  setCsvLoading]  = useState(false);
   const [csvResult,   setCsvResult]   = useState(null);
@@ -201,7 +201,7 @@ const handleCsvUpload = async () => {
   const data = getValues();
 
   if (!data.sucursal || !data.fechaAProducir || !data.turno || !data.nombrePanadero) {
-    setErrorPopupMessage("Completa el encabezado de la orden antes de enviar el archivo.");
+    setErrorPopupMessage("Ingresa el turno, la sucursal y/o el nombre del panadero.");
     setIsPopupErrorOpen(true);
     return;
   }
@@ -460,7 +460,7 @@ const handleCsvUpload = async () => {
             </Row>
 
             {/* Botón submit — solo modo manual */}
-            {modoIngreso === "manual" && (
+            {/* {modoIngreso === "manual" && (
               <div className="text-center mt-5">
                 <Button
                   variant="primary"
@@ -478,7 +478,7 @@ const handleCsvUpload = async () => {
                   )}
                 </Button>
               </div>
-            )}
+            )} */}
           </Form>
         </Card.Body>
       </Card>
@@ -493,7 +493,7 @@ const handleCsvUpload = async () => {
 
           {/* Selector de modo */}
           <div className="modo-selector">
-            <button
+            {/* <button
               className={`modo-btn ${modoIngreso === "manual" ? "active" : ""}`}
               onClick={() => setModoIngreso("manual")}
               type="button"
@@ -504,7 +504,7 @@ const handleCsvUpload = async () => {
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
               </svg>
               Ingreso manual
-            </button>
+            </button> */}
             <button
               className={`modo-btn ${modoIngreso === "csv" ? "active" : ""}`}
               onClick={() => setModoIngreso("csv")}
@@ -524,7 +524,7 @@ const handleCsvUpload = async () => {
           {/* ── Modo Manual ── */}
           {modoIngreso === "manual" && (
             <>
-              <div className="mb-4 search-filter-container">
+              {/* <div className="mb-4 search-filter-container">
                 <div className="search-wrapper">
                   <Form.Control
                     type="text"
@@ -623,7 +623,7 @@ const handleCsvUpload = async () => {
                     )}
                   </tbody>
                 </Table>
-              </div>
+              </div> */}
             </>
           )}
 
