@@ -4,7 +4,7 @@ import DownloadDropdown from "../../../components/DownloadDropdown/DownloadDropd
 import { formatDateToDisplay } from "../../../utils/dateUtils";
 import "./DesktopOrderDetails.css";
 
-const DesktopOrderDetails = ({ order, onDownloadXLS, onDownloadPDF }) => {
+const DesktopOrderDetails = ({ order, detalleConsumo, onDownloadXLS, onDownloadPDF }) => {
   const encabezado = order?.encabezadoOrden;
   const detalles = order?.detalleOrden;
 
@@ -15,7 +15,7 @@ const DesktopOrderDetails = ({ order, onDownloadXLS, onDownloadPDF }) => {
         onDownloadXLS={onDownloadXLS}
         onDownloadPDF={onDownloadPDF}
       />
-      <OrderTable productos={detalles} />
+      <OrderTable productos={detalles} consumoIngredientes={detalleConsumo} />
     </Container>
   );
 };
@@ -99,15 +99,47 @@ const DesktopHeader = ({ encabezado, onDownloadXLS, onDownloadPDF }) => (
   </Card>
 );
 
-const OrderTable = ({ productos }) => {
+const OrderTable = ({ productos, consumoIngredientes }) => {
   // Filtrar productos por tipo de producción
   const productosBandejas = productos?.filter(prod => prod.tipoProduccion === "bandejas") || [];
   const productosHarina = productos?.filter(prod => prod.tipoProduccion === "harina" || prod.tipoProduccion === "Otros") || [];
+
+  const calcularTotalHarinaProdPorBandejas = () => {
+    // ✅ Valida que sea array, no solo que exista
+    if (!Array.isArray(consumoIngredientes) || consumoIngredientes.length === 0) return null;
+
+    const harinas = consumoIngredientes.filter(item =>
+      item.Ingrediente?.toLowerCase().includes("harina")
+    );
+
+    if (harinas.length === 0) return null;
+
+    const totalHarina = harinas.reduce((sum, item) => {
+      return sum + parseFloat(item.CantidadUsada || 0);
+    }, 0);
+
+    const unidad = harinas[0]?.UnidadMedida || "";
+
+    return {
+      total: totalHarina.toFixed(2),
+      unidad,
+    };
+  };
+
+  const redondearASiguienteMultiploDe5 = (numero) => {
+    const num = parseFloat(numero) || 0;
+    if (num <= 5) return 5; // Si es menor o igual a 5, devolver 5
+
+    // Para números mayores a 5, redondear al siguiente múltiplo de 5
+    return Math.ceil(num / 5) * 5;
+  };
 
   // Calcular total de harina
   const totalHarina = productosHarina.reduce((total, prod) => {
     return total + (Number(prod.cantidadHarina) || 0);
   }, 0);
+
+  const totalHarinaFrances = calcularTotalHarinaProdPorBandejas();
 
   return (
     <Card className="shadow-lg border-0 overflow-hidden mb-5" style={{ borderRadius: "15px" }}>
@@ -153,13 +185,45 @@ const OrderTable = ({ productos }) => {
                 </tr>
               </thead>
               <tbody>
+                {totalHarinaFrances && (
+                  <tr
+                    className="align-middle"
+                    style={{
+                      backgroundColor: "#f8f9fa",
+                      borderBottom: "2px solid #f1f1f1",
+                    }}
+                  >
+                    <td className="ps-4 text-center">
+                      <span className="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2">
+                        1
+                      </span>
+                    </td>
+                    <td>
+                      <div className="d-flex align-items-center gap-3">
+                        <span className="fw-medium">Frances</span>
+                      </div>
+                    </td>
+                    <td className="text-center fw-bold text-primary">
+                      {redondearASiguienteMultiploDe5(totalHarinaFrances.total)}
+                    </td>
+                    <td className="text-center">
+                      <span className="badge bg-primary bg-opacity-10 text-dark rounded-pill px-3 py-2">
+                        Panaderia
+                      </span>
+                    </td>
+                  </tr>
+                )}
+
+                {/* Resto de productos por harina — el índice arranca en 1 si Frances existe */}
                 {productosHarina.map((prod, index) => (
-                  <TableRowHarina key={prod.idDetalleOrdenProduccion} product={prod} index={index} />
+                  <TableRowHarina
+                    key={prod.idDetalleOrdenProduccion}
+                    product={prod}
+                    index={totalHarinaFrances ? index + 1 : index}
+                  />
                 ))}
-                {/* Fila de total */}
+
                 <tr className="bg-light">
-                  {/* <td colSpan="2" className="text-end fw-bold">Total Harina:</td> */}
-                  {/* <td className="text-center fw-bold text-primary">{totalHarina} kg</td> */}
                   <td></td>
                 </tr>
               </tbody>

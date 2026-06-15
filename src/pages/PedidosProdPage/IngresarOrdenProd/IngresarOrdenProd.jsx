@@ -12,7 +12,7 @@ import dayjs from "dayjs";
 import ErrorPopup from "../../../components/Popup/ErrorPopUp";
 import useGetProductosYPrecios from "../../../hooks/productosprecios/useGetProductosYprecios";
 import { useGetSucursales } from "../../../hooks/sucursales/useGetSucursales";
-import { filterProductsByName, getFilteredProductsByCategory, getInitials, getUniqueColor, getUserSucursalName, handleIngresarOrdenProduccionSubmit, scrollToAlert } from "./IngresarOrdenProdUtils";
+import { descargarPdfDuranteIngresoOrden, filterProductsByName, getFilteredProductsByCategory, getInitials, getUniqueColor, getUserSucursalName, handleIngresarOrdenProduccionSubmit, scrollToAlert } from "./IngresarOrdenProdUtils";
 import { getUserData } from "../../../utils/Auth/decodedata";
 import "./ordenes.css";
 import useGetFechaProduccion from "../../../hooks/fecha-produccion/useGetFechaProduccion";
@@ -232,6 +232,10 @@ const handleCsvUpload = async () => {
     formData.append("ordenHaader", ordenHaader);
 
     const res = await ingresarOrdenProduccionBatchService(formData);
+    if(res.status === 200){
+      console.log(res);
+      descargarPdfDuranteIngresoOrden(res.idOrdenProduccion.idOrdenGenerada);
+    }
 
     setCsvResult({
       insertados: res.idOrdenProduccion ? 1 : 0,
