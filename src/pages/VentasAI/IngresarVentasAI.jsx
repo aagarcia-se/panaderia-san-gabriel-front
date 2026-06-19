@@ -6,6 +6,7 @@ import useGetSucursales from "../../hooks/sucursales/useGetSucursales";
 import { getUserData } from "../../utils/Auth/decodedata";
 import { ingresarVentaAIService } from "../../services/vetnasAI/ventasAI.service";
 import "./IngresarVentas.styles.css";
+import { getCurrentDateTimeWithSeconds } from "../../utils/dateUtils";
 
 
 const IngresarVentasAI = () => {
@@ -61,37 +62,65 @@ const IngresarVentasAI = () => {
   const totalGastos = gastos.reduce((a, g) => a + g.subtotal, 0);
 
   // --- Enviar ---
-  const handleEnviar = async () => {
-    if (!formularioCompleto) return;
-    setIsLoading(true);
-    setError(null);
+const handleEnviar = async () => {
+  if (!formularioCompleto) return;
+  setIsLoading(true);
+  setError(null);
 
-    try {
-      const ventaHeader = {
-        turno,
-        idSucursal: sucursal,
-        idUsuario: usuario.idUsuario,
-        fecha: dayjs().format("YYYY-MM-DD"),
-        ventaReal: parseFloat(ventaReal),
-        gastos,
-      };
+  try {
+    const fechaActual = dayjs().format("YYYY-MM-DD");
 
-      const formData = new FormData();
-      formData.append("image", imagen);
-      formData.append("ventaHeader", JSON.stringify(ventaHeader));
+    const encabezadoVenta = {
+      idOrdenProduccion: null,
+      idUsuario: usuario.idUsuario,
+      idSucursal: sucursal,
+      ventaTurno: turno,
+      fechaVenta: fechaActual,
+      fechaCreacion: fechaActual,
+      fechaYHoraVenta: getCurrentDateTimeWithSeconds(),
+    };
 
-      const response = await ingresarVentaAIService(formData);
+    const detalleIngreso = {
+      montoTotalIngresado: parseFloat(ventaReal),
+      fechaIngreso: fechaActual,
+    };
 
-      if (!response.ok) throw new Error(response.message || "Error al procesar");
+    const gastosDiarios = gastos.length > 0
+      ? {
+          encabezadoGastosDiarios: {
+            idUsuario: usuario.idUsuario,
+            montoTotalGasto: totalGastos,
+            fechaIngreso: fechaActual,
+          },
+          detalleGastosDiarios: gastos.map((g) => ({
+            detalleGasto: g.detalleGasto,
+            subTotal: g.subtotal,
+          })),
+        }
+      : {};
 
+    const payload = {
+      encabezadoVenta,
+      detalleIngreso,
+      gastosDiarios,
+    };
+
+    const formData = new FormData();
+    formData.append("image", imagen);
+    formData.append("venta", JSON.stringify(payload));
+
+    const response = await ingresarVentaAIService(formData);
+    if(response.status === 200) {
       setSuccess(true);
-    } catch (err) {
-      console.error("Error al enviar la venta:", err);
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
     }
-  };
+
+  } catch (err) {
+    console.error("Error al enviar la venta:", err);
+    setError(err.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   if (success) {
     return (
